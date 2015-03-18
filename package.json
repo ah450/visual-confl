@@ -1,0 +1,24 @@
+{
+  "name": "visual-confl",
+  "description": "Visualizing confluence in CHR programs",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ah450/visual-confl.git"
+  },
+  "author": "Ahmed H. Ismail <ahm3d.hisham@gmail.com>",
+  "license": "GPL",
+  "bugs": {
+    "url": "https://github.com/ah450/visual-confl/issues"
+  },
+  "dependencies": {
+    "bower": "^1.3.12",
+    "grunt": "^0.4.5",
+    "socket.io": "^1.3.5",
+    "socket.io-logger": "0.0.2"
+  },
+  "keywords": [
+    "CHR",
+    "Confluence"
+  ]
+}
