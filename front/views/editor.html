@@ -1,0 +1,21 @@
+
+<div class="btn-group btn-group-sm" role="group" id="editor-controls">
+    <button type="button" class="btn btn-default" data-ng-click="checkProgram()"><span class="glyphicon glyphicon-ok"></span> Check</button>
+</div>
+<div id="editor">
+</div> 
+<div id="annotation">
+    <p>{{annotation}}</p>
+</div>
+
+<script>
+    var annotation = document.querySelector('#annotation');
+    var origOffsetY = annotation.offsetTop;
+
+    function onScroll(e) {
+        window.scrollY >= origOffsetY ? annotation.classList.add('sticky') :
+                                      annotation.classList.remove('sticky');
+    }
+    scrollListeners.push(onScroll);
+    document.addEventListener('scroll', onScroll);
+</script>

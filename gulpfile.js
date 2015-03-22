@@ -91,8 +91,8 @@ gulp.task('sass', ['html-to-js'], function() {
         .pipe(gulp.dest('./build/css/'));
 });
 
-gulp.task('css', ['sass'], function() {
-    return gulp.src('./build/css/*')
+gulp.task('css', ['sass', 'vendor'], function() {
+    return gulp.src(['./lib/**/*.css', './build/css/*.css'])
         .pipe(concatCss('main.css'))
         .pipe(gulp.dest('./build/'))
         .pipe(gulp.dest('./dist/'));
@@ -102,7 +102,7 @@ gulp.task('uglify', ['concat-build'], function() {
     return gulp.src('./build/app.js')
         .pipe(ngAnnotate())
         .pipe(uglify())
-        .pipe(gulp.dest('./dist'));
+        .pipe(gulp.dest('./dist/'));
 });
 
 
