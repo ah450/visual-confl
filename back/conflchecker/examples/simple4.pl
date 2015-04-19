@@ -1,5 +1,5 @@
 :- use_module(library(chr)).
-:- chr_constraint p/1.
+:- chr_constraint p/1, b/1.
 
 % Guards: All rules overlap with each other, although the first and second rule
 % lead to an inconsistent built-in store and thus create no critical pair. The
@@ -12,4 +12,5 @@
 p(X) <=> X = 1 | true.
 p(X) <=> X = 2 | true.
 p(2) <=> true.
-
+p(1) <=> b(1).
+b(X) <=> true.

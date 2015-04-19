@@ -107,9 +107,6 @@ Datastructures used:
 =============================================================================*/
 
 :- module(conflcheck, [ check_confluence/1, 
-                        check_confluence/2,
-                        check_confluence/3, 
-                        check_confluence/4,
                         show_critical_pairs/1,
                         show_critical_pairs/3,
                         show_all_critical_pairs/1,
@@ -123,6 +120,7 @@ Datastructures used:
                                 show_all_critical_pairs/1,
                                 show_all_critical_pairs/3]).
 
+:- use_module(annotations).
 
 :- use_module(stateequiv, [equivalent_states/2]).
 
@@ -146,68 +144,10 @@ Datastructures used:
 
 check_confluence(FileName) :-
     critical_pairs(FileName, CPS),
+    print_critical_pairs(CPS),
     start_joinable_check(FileName),
     cps_joinable(CPS, FileName, NoOfFail),
     end_joinable_check(FileName, NoOfFail),!.
-
-
-%% check_confluence(+FileName, RuleName1, RuleName2)
-%
-% This predicate checks two Rules from the file specified by FileName for 
-% confluence and prints the according output. The Name of the two rules is are 
-% given as RuleName1 and RuleName2. To check of only one rule RuleName1 and 
-% RuleName2 have to be the same. If a rule with the name RuleName1 or RuleName2 
-% does not exists in the program, nothing is checked.
-
-% If the program is not confluent, i.e. if there are non-joinable critical 
-% pairs, for those critical pairs a message is printed containing the critical 
-% pair, together with the according rules and overlap. This predicate always 
-% succeeds, even if the program is not confluent. The confluence check 
-% continues after the first non-joinable critical pair is found.
-%
-% The predicate first calculates all critical pairs stemming from all possible
-% overlaps of the two rules in the file specified by FileName. Second the
-% according outputs are made and flags are set before all critical pairs are
-% checked for joinability. At last, the final message is printed and the flags
-% are set back to their default values.
-
-check_confluence(FileName, RuleName1, RuleName2) :-
-    critical_pairs(FileName, RuleName1, RuleName2, CPS),
-    start_joinable_check(FileName),
-    cps_joinable(CPS, FileName, NoOfFail),
-    end_joinable_check(FileName, NoOfFail),!.
-    
-
-%% check_confluence(+FileName, -NoOfFail)
-%
-% Like check_confluence/1 but without any  output beeing printed and NoOfFail 
-% being bound to the number of non-joinable critical pairs.
-    
-check_confluence(FileName, NoOfFail) :- 
-    critical_pairs(FileName, CPS),
-    set_prolog_flag(verbose, silent),
-	style_check(-singleton),
-	set_prolog_flag(chr_toplevel_show_store, false),
-    cps_joinable_no_print(CPS, FileName, NoOfFail),
-    set_prolog_flag(chr_toplevel_show_store, true),
-    style_check(-singleton),
-    set_prolog_flag(verbose, normal).
-
-
-%% check_confluence(+FileName, +RuleName1, +RuleName2, -NoOfFail)
-%
-% Like check_confluence/3 but without any  output beeing printed and NoOfFail 
-% being bound to the number of non-joinable critical pairs.
-  
-check_confluence(FileName, RuleName1, RuleName2, NoOfFail) :-
-    critical_pairs(FileName, RuleName1, RuleName2, CPS),
-    set_prolog_flag(verbose, silent),
-	style_check(-singleton),
-	set_prolog_flag(chr_toplevel_show_store, false),
-    cps_joinable_no_print(CPS, FileName, NoOfFail),
-    set_prolog_flag(chr_toplevel_show_store, true),
-    style_check(-singleton),
-    set_prolog_flag(verbose, normal).
 
 
 %% cps_joinable(+CPS, +FileName, ~NoOfFail)
@@ -220,33 +160,21 @@ check_confluence(FileName, RuleName1, RuleName2, NoOfFail) :-
 
 cps_joinable([], _, 0).
 
-cps_joinable([cp(S1, S2, R1, R2, O, CAS)|CPS], FileName, N) :- 
+cps_joinable([CP|CPS], FileName, N) :- 
+    write_term('*********************************************************************************', []),nl,
+    CP = cp(S1, S2, R1, R2, O, CAS),
+    print_cp(CP),
     (states_joinable(S1, S2, FileName) 
     ->
-	    (N1 is 0)
+        (print('This ciritical pair is joinable'), nl, 
+            N1 is 0)
     ;
-	    (print_not_joinable(cp(S1, S2, R1, R2, O, CAS)),
-	    N1 is 1)
+        (print('This critical pair is not joinable'), nl,
+           N1 is 1)
     ), !,
     cps_joinable(CPS, FileName, N2),
-    N is N1 + N2.
-
-
-%% cps_joinable_no_print(+CPS, +FileName, ~NoOfFail)
-%
-% Like cps_joinable/3 but with no output generated.  
-
-cps_joinable_no_print([], _, 0).
-
-cps_joinable_no_print([cp(S1, S2, _, _, _, _)|CPS], FileName, N) :- 
-    (states_joinable(S1, S2, FileName) 
-    ->
-        (N1 is 0)
-    ;
-        (N1 is 1)
-    ), !,
-    cps_joinable_no_print(CPS, FileName, N2),
-    N is N1 + N2.
+    N is N1 + N2,
+    write_term('*********************************************************************************', []),nl.
     
     
 %% states_joinable(+State1, +State2, +FileName)
@@ -270,10 +198,21 @@ cps_joinable_no_print([cp(S1, S2, _, _, _, _)|CPS], FileName, N) :-
 states_joinable(S1, S2, FileName) :-
     copy_term(S1, state(G1, B1, V1)),
     copy_term(S2, state(G2, B2, V2)),
+    States = (S1, S2),
+    numbervars(States, 0, _EStates),
+    print('Testing joinability of states'), nl, write_term(S1, [numbervars(true)]), nl,
+    write_term(S2, [numbervars(true)]), nl,
     append(G1, B1, L1),
     append(G2, B2, L2),
     list_to_goal(L1, H1),
     list_to_goal(L2, H2), 
+    print('Attempting all possible derivations '),
+    nl, print('The two goals that we are trying to achieve are:'), nl,
+    copy_term(H1, H1C),
+    copy_term(H2, H2C),
+    numbervars(H1C, 0, _EH1),
+    numbervars(H2C, 0, _EH2),
+    write_term(H1C, [numbervars(true)]), nl, write_term(H2C, [numbervars(true)]), nl,
     consult(FileName),
     call(H1), 
     findall_chr_constraints(V1, Result1),
@@ -281,6 +220,9 @@ states_joinable(S1, S2, FileName) :-
     call(H2), 
     findall_chr_constraints(V2, Result2),
     reconnect(Result1, Result2, G1n, G2n, V1n, V2n),
+    print('Derived states'), nl,
+    write_term(state(G1n, [], V1n), []), nl,
+    write_term(state(G2n, [], V2n), []), nl,
     equivalent_states(state(G1n, [], V1n), state(G2n, [], V2n)),!.
 
 
@@ -501,26 +443,6 @@ print_end_result(FileName, N) :-
     print(' non-joinable critical pair(s) found!'), nl.
 
 
-% print_not_joinable(+CP)
-%
-% This predicate generates a messages for a non-joinable critical pair. The
-% critical pair is printed together with the overlap and the rules it stems
-% from.
-
-print_not_joinable(cp(S1, S2, rule(N1, _, _, _, _), rule(N2, _, _, _, _), O, CAS)) :-
-    numbervars(cp(S1, S2, rule(N1, _, _, _, _), rule(N2, _, _, _, _), O, CAS), 0, _E),
-    write_term('===============================================================================', []),nl,
-    write_term('The following critical pair is not joinable:', []),nl,
-    write_term(S1, [numbervars(true)]),nl,
-    write_term(S2, [numbervars(true)]),nl,nl,
-    write_term('This critical pair stems from the critical ancestor state:', []),nl,
-    write_term(CAS, [numbervars(true)]),nl,nl,
-    write_term('with the overlapping part:', []),nl,
-    write_term(O, [numbervars(true)]),nl,nl,
-    write_term('of the following two rules: ', []),nl,
-    write_term(N1, [numbervars(true)]), nl,
-    write_term(N2, [numbervars(true)]), nl, 
-    write_term('===============================================================================', []),nl,nl.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% References %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
