@@ -6,8 +6,8 @@ angular.module('vconflApp')
     $stateProvider
         .state('Home', {
                 url: '/',
-                templateUrl: "views/editor.html",
-                controller: "EditorController",
+                templateUrl: "views/home.html",
+                controller: "HomeController",
                 onExit: function(){
                     for (var listener in scrollListeners) {
                         document.removeEventListener('scroll', listener);

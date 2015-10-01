@@ -105,9 +105,6 @@ gulp.task('uglify', ['concat-build'], function() {
         .pipe(gulp.dest('./dist/'));
 });
 
-
-
-
 gulp.task('clean', function() {
     del(['./dist', './build', './lib']);
 });

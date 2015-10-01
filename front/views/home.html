@@ -1,0 +1,8 @@
+<ul class="nav nav-pills">
+<li role="presentation" ng-class="{'editor': 'active'}"><a href="" ng-click="showEditor()">Editor</a></li>
+<li role="presentation" ng-class="{'graph': 'active'}" ><a href="" ng-click="showGraph()">Graph</a><li>
+</ul>
+<section>
+<section ng-show="editor"  ng-include="'views/editor.html'" ></section>
+<section ng-show="graph" ng-include="'views/graph.html'"></section>
+</section>

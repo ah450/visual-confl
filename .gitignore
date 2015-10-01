@@ -6,3 +6,4 @@ dist/
 build/
 *.sublime-project
 *.sublime-workspace
+example_out

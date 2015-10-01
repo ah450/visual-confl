@@ -65,7 +65,7 @@ Predicates in this file:
                                 and returns the number or non-joinable critical
                                 pairs
     
-    show_critical_pairs/1       Print non-trivial CPs of all rules in file
+    show_critical_pairs/1       Print non-trivial CPs of all rules in fileer
 
     show_critical_pairs/3       Print non-trivial CPs of a given rule pair
 
@@ -214,16 +214,36 @@ states_joinable(S1, S2, FileName) :-
     numbervars(H2C, 0, _EH2),
     write_term(H1C, [numbervars(true)]), nl, write_term(H2C, [numbervars(true)]), nl,
     consult(FileName),
-    call(H1), 
+    call(H1),
+    print('Rules for first'), nl, 
     findall_chr_constraints(V1, Result1),
     consult(FileName),
-    call(H2), 
+    call(H2),
+    print('Rules for second'), nl, 
     findall_chr_constraints(V2, Result2),
-    reconnect(Result1, Result2, G1n, G2n, V1n, V2n),
-    print('Derived states'), nl,
-    write_term(state(G1n, [], V1n), []), nl,
-    write_term(state(G2n, [], V2n), []), nl,
-    equivalent_states(state(G1n, [], V1n), state(G2n, [], V2n)),!.
+    (reconnect(Result1, Result2, G1n, G2n, V1n, V2n) -> 
+        (
+            print('Derived states'), nl,
+            copy_term(state(G1n, [], V1n), state(G1nc, [], V1nc)),
+            numbervars(state(G1nc, [], V1nc), 0, _EDS1),
+            write_term(state(G1nc, [], V1nc), [numbervars(true)]), nl,
+            copy_term(state(G2n, [], V2n), state(G2nc, [], V2nc)),
+            numbervars(state(G2nc, [], V2nc), 0, _EDS2),
+            write_term(state(G2nc, [], V2nc), [numbervars(true)]), nl,
+            print('Checking equivalence'), nl,
+            equivalent_states(state(G1n, [], V1n), state(G2n, [], V2n)),!
+        );
+        ( 
+            print('Derived states'), nl,
+            copy_term(state(G1n, [], V1n), state(G1nc, [], V1nc)),
+            numbervars(state(G1nc, [], V1nc), 0, _EDS1),
+            write_term(state(G1nc, [], V1nc), [numbervars(true)]), nl,
+            copy_term(state(G2n, [], V2n), state(G2nc, [], V2nc)),
+            numbervars(state(G2nc, [], V2nc), 0, _EDS2),
+            write_term(state(G2nc, [], V2nc), [numbervars(true)]), nl,
+            fail
+        )
+    ).
 
 
 % list_to_goal(+L, ~G)
@@ -255,6 +275,9 @@ findall_chr_constraints(GlobVars, Res) :-
     (
         (
             find_chr_constraint(R),
+            copy_term(R, RC),
+            numbervars(RC, 0, _ERC, [attvar(bind)]),
+            write_term(RC, [attributes(ignore), numbervars(true)]), nl,
             write(output, R),
             write(output, ', '),
             nl(output),
@@ -270,10 +293,13 @@ findall_chr_constraints(GlobVars, Res) :-
     nl(output),
     close(Sout),
     open(Name, read, Sin, [alias(input)]),
-    read(input, T), 
+    read(input, T),
     close(Sin),
     delete_file(Name),
     to_list(T, Res).
+    %% copy_term(Res, Resc),
+    %% numbervars(Resc, 0, _ER),
+    %% write_term(Resc, [numbervars(true)]), nl.
 
 
 % to_list(+Term, -List)

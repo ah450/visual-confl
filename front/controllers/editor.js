@@ -19,13 +19,6 @@ angular.module('vconflApp').controller('EditorController', function($scope, conf
     $scope.codeMirror = CodeMirror(document.getElementById('editor'), 
         editorOptions);
 
-    $scope.annotation = "";
-    conflChecker.onResult(function (status, data) {
-        if(status) {
-            console.log(data);
-        }
-    });
-
     $scope.checkProgram = function() {
         conflChecker.check($scope.codeMirror.getValue());
     };

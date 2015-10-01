@@ -30,6 +30,6 @@ cp_helper([H|T]):-
 %% prints a list of critical pairs
 print_critical_pairs(CPS):-
     write_term('----------------------------------------------------------------------------------', []),nl,
-    write_term('Critical pairs', []),nl,
+    %% write_term('Critical pairs', []),nl,
     cp_helper(CPS),
     write_term('----------------------------------------------------------------------------------', []),nl.
