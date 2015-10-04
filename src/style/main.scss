@@ -1,0 +1,36 @@
+@import 'vendor/include-media';
+@import 'vendor/material-color-prefixed';
+@import 'partials/variables';
+@import 'partials/reset';
+@import 'partials/mixins';
+
+body {
+  background-color: $main-background;
+  font-family: $roboto;
+  font-weight: $normal-weight;
+}
+
+.wrapper {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  margin: 0px;
+  padding: 0px;
+}
+
+a.active {
+  pointer-events: none;
+  cursor: default;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: $roboto;
+  font-weight: $bold-weight;
+}
+
+.wf-loading {
+  visibility: hidden;
+}
+
+
+@import 'utility/utility';

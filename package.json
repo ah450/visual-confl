@@ -7,10 +7,14 @@
     "url": "https://github.com/ah450/visual-confl.git"
   },
   "author": "Ahmed H. Ismail <ahm3d.hisham@gmail.com>",
-  "license": "GPL",
+  "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/ah450/visual-confl/issues"
   },
+  "engines":
+    {
+      "node": "~0.12"
+    },
   "dependencies": {
     "autoprefixer": "^6.0.3",
     "coffeelint-stylish": "^0.1.2",
