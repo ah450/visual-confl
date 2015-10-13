@@ -11,10 +11,9 @@
   "bugs": {
     "url": "https://github.com/ah450/visual-confl/issues"
   },
-  "engines":
-    {
-      "node": "~0.12"
-    },
+  "engines": {
+    "node": "~0.12"
+  },
   "dependencies": {
     "autoprefixer": "^6.0.3",
     "coffeelint-stylish": "^0.1.2",
@@ -39,6 +38,7 @@
     "gulp-uglify": "^1.4.1",
     "gulp-util": "^3.0.6",
     "gulp-watch": "^4.3.5",
+    "jshint-stylish": "^2.0.1",
     "main-bower-files": "^2.9.0",
     "merge2": "^0.3.6",
     "minimist": "^1.2.0",

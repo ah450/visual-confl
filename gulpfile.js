@@ -15,6 +15,7 @@ var css = require('./gulp-tasks/css');
 var assets = require('./gulp-tasks/assets');
 var templates = require('./gulp-tasks/templates');
 var scripts = require('./gulp-tasks/scripts');
+var grammar = require('./gulp-tasks/grammar');
 var rimraf = require('rimraf');
 var watch = require('gulp-watch');
 
@@ -23,6 +24,7 @@ gulp.task('bower-install', function() {
   return bower()
     .pipe(gulp.dest('./bower_components'));
 });
+
 
 gulp.task('bower', ['bower-install', 'create-dirs'], function() {
   // moves main files to lib folder
@@ -56,9 +58,10 @@ gulp.task('build', ['create-dirs', 'bower'], function() {
     var templatesStream = templates.processTemplates();
     var index = gulp.src('src/index.html');
     var assetsStream = assets.processAssets();
+    var grammarSrc = grammar.processGrammar();
     var js = merge(dependenciesStream, templatesStream, scriptStream, routesStream)
       .pipe(concat('app.js'));
-    var streams = merge([cssStream, js, assetsStream, index]);
+    var streams = merge([cssStream, js, assetsStream, index, grammarSrc]);
     return streams.pipe(gulp.dest('build'))
 });
 
@@ -79,7 +82,8 @@ gulp.task('production-helper', ['create-dirs', 'bower'], function() {
     }));
   var js = merge(dependenciesStream, templatesStream, scriptStream, routesStream)
     .pipe(concat('app.js'));
-  var streams = merge([cssStream, js, assetsStream, index]);
+  var grammarSrc = grammar.processGrammar();
+  var streams = merge([cssStream, js, assetsStream, index, grammarSrc]);
   return streams
     .pipe(gulp.dest(options.dest));
 });

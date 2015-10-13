@@ -26,6 +26,7 @@
     "angulartics-google-analytics": "~0.1.1",
     "device.js": "~0.0.3",
     "jquery": "~2.1.4",
-    "keykodesjs": "~0.0.2"
+    "keykodesjs": "~0.0.2",
+    "pegjs": "~0.9.0"
   }
 }
