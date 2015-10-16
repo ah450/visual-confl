@@ -2,6 +2,7 @@ node_modules/
 bower_components/
 .idea/
 lib/
+libs/
 dist/
 build/
 *.sublime-project
