@@ -9,7 +9,7 @@
     "CHR",
     "Confluence"
   ],
-  "license": "GPL",
+  "license": "GPL-3.0",
   "ignore": [
     "**/.*",
     "node_modules",
