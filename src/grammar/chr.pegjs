@@ -61,7 +61,7 @@ rule
   = name:ruleName? body:ruleBody _[\n\r]* {return transformRule(name, body)}
 
 ruleBody
-  = h1:constraintList _ simpigationKeep:simpigation? _ g:guard? _ op:operator _ bodyConstraints:constraintList {return transformBody(h1, simpigationKeep, g, op, bodyConstraints)}
+  = h1:constraintList _ simpigationKeep:simpigation? _ op:operator _ g:guard? _ bodyConstraints:constraintList {return transformBody(h1, simpigationKeep, g, op, bodyConstraints)}
 
 constraintList
   = head:constraint _ "," _ tail:constraintList _ {return [head].concat(tail)}
@@ -87,7 +87,7 @@ constraint
   / name:identifier {return buildConstraint(name, [])}
 
 argList
-  = head:arg _ "," _ tail:argList _ {return head.concat(tail)}
+  = head:arg _ "," _ tail:argList _ {return [head].concat(tail)}
   / a:arg _ {return [a]}
 
 arg
@@ -95,7 +95,7 @@ arg
   / identifier
 
 guard
-  = "|" _ constraints:builtinConstraintList {return constraints}
+  = _ constraints:builtinConstraintList _ "|" {return constraints}
 
 builtinConstraintList
   = head:builtinConstraint _ "," _ tail:builtinConstraintList {return [head].concat(tail)}
