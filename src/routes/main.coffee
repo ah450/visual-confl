@@ -10,10 +10,6 @@ angular.module 'vconfl'
     home =
       name: 'main.home'
       url: ''
-      resolve:
-        parser: (ParseFunction) ->
-          # Resolve promise before loading controller
-          return ParseFunction
       views:
         'content@main':
           templateUrl: 'home/main.html'

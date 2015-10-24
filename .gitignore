@@ -8,3 +8,6 @@ build/
 *.sublime-project
 *.sublime-workspace
 example_out
+compiledSpecs
+test
+coverage

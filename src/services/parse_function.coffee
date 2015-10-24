@@ -5,9 +5,7 @@ Requires browser version of PEGjs
 The parse function parses it's input and returns a new instance of CHRProgram
 ###
 angular.module 'chr'
-  .factory 'ParseFunction', ($http, CHRProgram) ->
-    $http.get '/grammar/chr.pegjs'
-      .then (data) ->
-        parser = PEG.buildParser(data, {optimize: "speed"})
-        (input) ->
-          new CHRProgram parser.parse input
+  .factory 'parseCHR', (CHRProgram) ->
+    (input) ->
+      new CHRProgram PEGParser.parse input
+        

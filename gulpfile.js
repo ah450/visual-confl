@@ -32,8 +32,16 @@ gulp.task('bower', ['bower-install', 'create-dirs'], function() {
     .pipe(gulp.dest('libs'));
 });
 
+gulp.task('bower-dev', ['bower-install', 'create-dirs'], function() {
+  // moves main files to lib folder
+  return gulp.src(mainBowerFiles({
+    includeDev: 'inclusive'
+  }), {base: 'bower_components'})
+    .pipe(gulp.dest('libs'));
+});
+
 gulp.task('create-dirs', function() {
-  var dirs = ['build', 'dist', 'libs'];
+  var dirs = ['build', 'dist', 'libs', 'test', 'compiledSpecs'];
   rimraf.sync('libs');
   dirs.forEach(function(dir) {
     try {
@@ -59,9 +67,9 @@ gulp.task('build', ['create-dirs', 'bower'], function() {
     var index = gulp.src('src/index.html');
     var assetsStream = assets.processAssets();
     var grammarSrc = grammar.processGrammar();
-    var js = merge(dependenciesStream, templatesStream, scriptStream, routesStream)
+    var js = merge(dependenciesStream, grammarSrc, templatesStream, scriptStream, routesStream)
       .pipe(concat('app.js'));
-    var streams = merge([cssStream, js, assetsStream, index, grammarSrc]);
+    var streams = merge([cssStream, js, assetsStream, index]);
     return streams.pipe(gulp.dest('build'))
 });
 
@@ -80,12 +88,11 @@ gulp.task('production-helper', ['create-dirs', 'bower'], function() {
   var index = gulp.src('src/index.html').pipe(minifyHtml({
       empty: true
     }));
-  var js = merge(dependenciesStream, templatesStream, scriptStream, routesStream)
-    .pipe(concat('app.js'));
   var grammarSrc = grammar.processGrammar();
-  var streams = merge([cssStream, js, assetsStream, index, grammarSrc]);
-  return streams
-    .pipe(gulp.dest(options.dest));
+  var js = merge(dependenciesStream, grammarSrc, templatesStream, scriptStream, routesStream)
+    .pipe(concat('app.js'));
+  var streams = merge([cssStream, js, assetsStream, index]);
+  return streams.pipe(gulp.dest(options.dest));
 });
 
 gulp.task('production', ['production-helper'], function () {
@@ -122,4 +129,27 @@ gulp.task('watch', function() {
   watch(['./src/**', './images/**', 'bower.json'], function() {
     gulp.start('reload');
   });
+});
+
+
+gulp.task('build-test', ['create-dirs', 'bower-dev'], function() {
+  var scriptStream = scripts.processScripts();
+  var dependenciesStream = scripts.processDeps().pipe(concat('app-deps.js'));
+  var routesStream = scripts.processRoutes();
+  var grammarSrc = grammar.processGrammar();
+  var templatesStream = templates.processTemplates();
+  var js = merge(grammarSrc, templatesStream, scriptStream, routesStream)
+    .pipe(concat('app-testing.js'))
+  var appStreams = merge([dependenciesStream, js]).pipe(gulp.dest('test'))
+  var specStream = scripts.processSpecs().pipe(gulp.dest('compiledSpecs'))
+  return merge([appStreams, specStream]);
+})
+
+
+gulp.task('test', ['build-test'], function (done) {
+  var Server = require('karma').Server;
+  new Server({
+    configFile: __dirname + '/karma.conf.js',
+    singleRun: true
+  }, done).start();
 });

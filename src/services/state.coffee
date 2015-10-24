@@ -1,12 +1,13 @@
 angular.module 'chr'
   .factory 'State', ->
     class State
-      constructor: (@chrProgram, @GSU=[], @GSB=[], @CU=[], @BI=[], @tokens=[]) ->
-        @variables = []
-
+      constructor: (@chrProgram, @GSU=[], @GSB=[], @CU=[],
+        @BI=[], @tokens=[]) ->
+          @variables = []
 
       @isVariable: (x) ->
-        # currently only ints and identifiers allowed, identifiers treated as variables if first letter is capital
+        # currently only ints and identifiers allowed, identifiers treated as
+        # variables if first letter is capital
         isInteger = isNan parseInt x, 10
         not (isInteger || (x.charAt(0).toLowerCase() == x.charAt(0)))
 
@@ -29,7 +30,10 @@ angular.module 'chr'
         , true
 
       isFailed: ->
-        "false" not in @BI
+        "false" in @BI
+
+      isSuccess: ->
+        not @isFailed() and not @hasComputation()
 
       hasComputation: ->
         @canIntroduce() || @canSolve() || @canPropagate() || @canSimplify()

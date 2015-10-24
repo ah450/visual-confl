@@ -36,7 +36,17 @@ function processDeps() {
   return libs;
 }
 
-
+function processSpecs() {
+  var coffeeScript = gulp.src(['spec/**/*.coffee'])
+    .pipe(coffeelint())
+    .pipe(coffeelint.reporter(stylishCoffee))
+    .pipe(coffee().on('error', gutil.log));
+  var js = gulp.src(['spec/**/*.js'])
+    .pipe(jshint())
+    .pipe(jshint.reporter('jshint-stylish'));
+  return merge([coffeeScript, js]);
+}
 exports.processScripts = processScripts;
 exports.processDeps = processDeps;
 exports.processRoutes = processRoutes;
+exports.processSpecs = processSpecs;

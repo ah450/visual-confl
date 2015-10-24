@@ -21,13 +21,15 @@ angular.module 'chr'
           , true
         if lastLetter != 'z'
           # Simply increment the end
-          @token[@token.length - 1] = String.fromCharCode lastLetter.charCodeAt(0) + 1
+          @token[@token.length - 1] =
+            String.fromCharCode(lastLetter.charCodeAt(0) + 1)
         else if isAllZs()
           # If they are all 'z's then it's time to move on to the next length
           @token = ('a' for _ in @token)
           @token.push 'a'
         else
-          # Remove last element and find the first non 'z' and increment it recursively
+          # Remove last element and find the first non 'z'
+          # and increment it recursively
           @token = @token[...-1]
           @incrementToken()
 

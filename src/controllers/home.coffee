@@ -1,5 +1,5 @@
 angular.module 'vconfl'
-  .controller 'HomeController', ($scope, parse) ->
+  .controller 'HomeController', ($scope, parseCHR) ->
     $scope.models =
       programSrc: ""
     

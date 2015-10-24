@@ -52,6 +52,22 @@
     return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
       s4() + '-' + s4() + s4() + s4();
   }
+
+  function builtInFalse() {
+    return {
+      name: 'false',
+      args: [],
+      operator: 'false'
+    }
+  }
+
+  function builtInTrue() {
+    return {
+      name: 'true',
+      args: [],
+      operator: 'false'
+    }
+  }
 }
 
 start
@@ -61,7 +77,7 @@ rule
   = name:ruleName? body:ruleBody _[\n\r]* {return transformRule(name, body)}
 
 ruleBody
-  = h1:constraintList _ simpigationKeep:simpigation? _ op:operator _ g:guard? _ bodyConstraints:constraintList {return transformBody(h1, simpigationKeep, g, op, bodyConstraints)}
+  = h1:constraintList _ simpigationRemove:simpigation? _ op:operator _ g:guard? _ bodyConstraints:constraintList {return transformBody(h1, simpigationRemove, g, op, bodyConstraints)}
 
 constraintList
   = head:constraint _ "," _ tail:constraintList _ {return [head].concat(tail)}
@@ -83,7 +99,8 @@ ruleName
   = name:text "@" _ {return name.join("").trim()}
 
 constraint
-  = name:identifier "(" _ args:argList ")" {return buildConstraint(name, args)}
+  = builtinConstraint
+  / name:identifier "(" _ args:argList ")" {return buildConstraint(name, args)}
   / name:identifier {return buildConstraint(name, [])}
 
 argList
@@ -102,7 +119,9 @@ builtinConstraintList
   / c:builtinConstraint {return [c]}
 
 builtinConstraint
-  = left:arg _ op:binaryBuiltIn _ right:arg {return buildBuiltInConstraint(left, op, right)}
+  = 'true' {return builtInTrue()}
+  / 'false' {return builtInFalse()}
+  / left:arg _ op:binaryBuiltIn _ right:arg {return buildBuiltInConstraint(left, op, right)}
 
 binaryBuiltIn
   = "="

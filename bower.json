@@ -28,5 +28,8 @@
     "keykodesjs": "~0.0.2",
     "pegjs": "~0.9.0",
     "device.js": "devicejs#~0.2.7"
+  },
+  "devDependencies": {
+    "angular-mocks": "~1.4.7"
   }
 }
