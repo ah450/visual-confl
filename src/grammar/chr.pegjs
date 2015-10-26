@@ -9,7 +9,8 @@
     return {
       left: left,
       right: right,
-      operator: operator
+      operator: operator,
+      name: 'builtin'
     }
   }
 
@@ -74,7 +75,7 @@ start
   = _ rules:rule+ {return rules}
 
 rule
-  = name:ruleName? body:ruleBody _[\n\r]* {return transformRule(name, body)}
+  = name:ruleName? body:ruleBody _ "." [\n\r]* {return transformRule(name, body)}
 
 ruleBody
   = h1:constraintList _ simpigationRemove:simpigation? _ op:operator _ g:guard? _ bodyConstraints:constraintList {return transformBody(h1, simpigationRemove, g, op, bodyConstraints)}
@@ -125,10 +126,7 @@ builtinConstraint
 
 binaryBuiltIn
   = "="
-  / "<"
-  / "<="
-  / ">"
-  / ">="
+  / '!='
 
 text
  = [0-9a-zA-Z\t ]+

@@ -3,7 +3,7 @@ Prototype for CHRProgram objects
 Responsible for representation of CHRPrograms
 ###
 angular.module 'chr'
-  .factory 'CHRProgram', (Rule, CTSolver) ->
+  .factory 'CHRProgram', (Rule, unify) ->
 
     class CHRProgram
       constructor: (rules) ->
@@ -14,5 +14,7 @@ angular.module 'chr'
       (logically follows)
       ###
       isImplied: (kb, goals) ->
-        CTSolver kb, goals
+        true
+        
+
     

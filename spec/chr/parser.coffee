@@ -11,7 +11,7 @@ describe 'CHRProgram', ->
 
   describe 'syntax errors', ->
     it 'should throw syntax errors', ->
-      programSrc = "k( a, b(), c => true"
+      programSrc = "k( a, b(), c => true."
       parse = @parseCHR.bind @parseCHR, programSrc
       expect(parse).to.throw PEGParser.SyntaxError
 
@@ -19,21 +19,21 @@ describe 'CHRProgram', ->
   describe 'correct programs', ->
     it "should correctly parse unamed version", ->
       programSrc = """
-      leq(X,Y), leq(Y, Z) => leq(X, Z)
-      leq(X, Y), leq(Y, X) <=> X = Y
+      leq(X,Y), leq(Y, Z) => leq(X, Z).
+      leq(X, Y), leq(Y, X) <=> X = Y.
       """
       parse = @parseCHR.bind @parseCHR, programSrc
       expect(parse).to.not.throw()
     it 'should correctly parse named version', ->
       programSrc = """
-      rule1 @ leq(X,Y), leq(Y, Z) => leq(X, Z)
-      rule2 @ leq(X, Y), leq(Y, X) <=> X = Y
+      rule1 @ leq(X,Y), leq(Y, Z) => leq(X, Z).
+      rule2 @ leq(X, Y), leq(Y, X) <=> X = Y.
       """
       parse = @parseCHR.bind @parseCHR, programSrc
       expect(parse).to.not.throw()
 
     it "should correctly parse progagation rules", ->
-      programSrc = 'a => c'
+      programSrc = 'a => c.'
       program = @parseCHR programSrc
       rules = program.rules
       expect(rules).to.be.instanceOf Array
@@ -44,7 +44,7 @@ describe 'CHRProgram', ->
 
 
     it 'should correctly parse implication rules with gaurds', ->
-      programSrc = 'a(X), b(Y) => X = Y |  c'
+      programSrc = 'a(X), b(Y) => X = Y |  c.'
       program = @parseCHR programSrc
       rules = program.rules
       expect(rules).to.be.instanceOf Array
@@ -53,7 +53,7 @@ describe 'CHRProgram', ->
       expect(rule.isPropagation).to.be.true
 
     it "should correctly parse simplification rules", ->
-      programSrc = 'a <=> b'
+      programSrc = 'a <=> b.'
       program = @parseCHR programSrc
       rules = program.rules
       expect(rules).to.be.instanceOf Array
@@ -62,7 +62,7 @@ describe 'CHRProgram', ->
       expect(rule.isSimplification).to.be.true
 
     it "should correctly parse simplification rules with gaurds", ->
-      programSrc = 'a(K) <=>  K = 5 | b'
+      programSrc = 'a(K) <=>  K = 5 | b.'
       program = @parseCHR programSrc
       rules = program.rules
       expect(rules).to.be.instanceOf Array
@@ -71,7 +71,7 @@ describe 'CHRProgram', ->
       expect(rule.isSimplification).to.be.true
 
     it "should correctly parse simpifigation rules", ->
-      programSrc = 'a \\ d <=> b'
+      programSrc = 'a \\ d <=> b.'
       program = @parseCHR programSrc
       rules = program.rules
       expect(rules).to.be.instanceOf Array
@@ -80,7 +80,7 @@ describe 'CHRProgram', ->
       expect(rule.isSimpigation).to.be.true
 
     it "should correctly parse simpifigation rules with gaurds", ->
-      programSrc = 'a(W) \\ d <=> W = 420 | b'
+      programSrc = 'a(W) \\ d <=> W = 420 | b.'
       program = @parseCHR programSrc
       rules = program.rules
       expect(rules).to.be.instanceOf Array

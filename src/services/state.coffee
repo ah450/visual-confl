@@ -26,7 +26,8 @@ angular.module 'chr'
       @canPropagate: ->
         hasTokens = @tokens.length > 0
         hasTokens && @tokens.reduce (prev, rule) ->
-          prev && @chrProgram.isImplied @BI, rule.guard
+          prev && @chrProgram.isImplied(@BI, rule.guard) &&
+            @chrProgram.canApply(@CU, @BI, @rule.head)
         , true
 
       isFailed: ->
