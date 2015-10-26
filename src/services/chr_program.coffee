@@ -15,6 +15,15 @@ angular.module 'chr'
       ###
       isImplied: (kb, goals) ->
         true
+      ###
+        Attempts to unify two formulas.
+        Expects formulas to be arrays of constraints or variables and atoms
+        @returns Object representing substitutions, false if can't unify
+      ###
+      unify: (lhs, rhs) ->
+        substitutions = {}
+        return false if not unify lhs, rhs, substitutions
+        return substitutions
         
 
     

@@ -34,7 +34,7 @@ angular.module 'chr'
             return false
         else if (lhs instanceof Object and lhs.hasOwnProperty 'name') and
           (rhs instanceof Object and rhs.hasOwnProperty 'name')
-            # User defined constraints
+            # constraints
             if lhs.name != rhs.name
               return false
             else

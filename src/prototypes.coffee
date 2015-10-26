@@ -15,10 +15,25 @@ angular.module 'vconfl'
 
 angular.module 'vconfl'
   .config ->
-    String::capitalize = ->
-      return @charAt(0).toUpperCase() + @slice(1).toLowerCase()
+    if typeof String::capitalize isnt 'function'
+      String::capitalize = ->
+        return @charAt(0).toUpperCase() + @slice(1).toLowerCase()
 
 angular.module 'vconfl'
   .config ->
-    Function::property = (prop, desc) ->
-      Object.defineProperty @::, prop, desc
+    if typeof Function::property isnt 'function'
+      Function::property = (prop, desc) ->
+        Object.defineProperty @::, prop, desc
+
+
+angular.module 'chr'
+  .config ->
+    if typeof Function::property isnt 'function'
+      Function::property = (prop, desc) ->
+        Object.defineProperty @::, prop, desc
+
+angular.module 'chr'
+  .config ->
+    if typeof String::capitalize isnt 'function'
+      String::capitalize = ->
+        return @charAt(0).toUpperCase() + @slice(1).toLowerCase()
