@@ -2,10 +2,10 @@
 Prototype for CHR rules
 ###
 angular.module 'chr'
-  .factory 'Rule', (enumerator) ->
+  .factory 'Rule', (isVariable) ->
     class Rule
       TYPES: ['propagation', 'simplification', 'simpigation']
-      constructor: (parsedRule) ->
+      constructor: (parsedRule, @chrProgram) ->
         for own k, v of parsedRule
           key = "parsed_" + k
           @[key] = v
@@ -18,12 +18,31 @@ angular.module 'chr'
           @type = @TYPES[2]
         else
           @type = @TYPES[1]
+  
+        @variables = []
+        variableMap = {}
+        variableRenamer = (c) =>
+          if c.hasOwnProperty 'args'
+            c.args = c.args.map (arg) =>
+              if isVariable arg
+                if arg in @variables
+                  return variableMap[arg]
+                else
+                  newName = @chrProgram.getNewVariableName
+                  variableMap[arg] = newName
+                  @variables.push newName
+                  return newName
+              else
+                return arg
+          return c
 
-        @head = @parsed_head
-        @body = @parsed_add
-        @remove = @parsed_remove
-        @add = @parsed_add
-        @guard = @parsed_guard
+        @head = @parsed_head.map variableRenamer
+        @body = @parsed_add.map variableRenamer
+        @remove = @parsed_remove.map variableRenamer
+        @add = @parsed_add.map variableRenamer
+        @guard = @parsed_guard.map variableRenamer
+
+
 
         ###
         @survive is an array of the head constraints that won't be removed

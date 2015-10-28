@@ -3,7 +3,7 @@ Enumerator for generating tokens
 Enumerates lower case english alphabet only [a-z]
 ###
 angular.module 'chr'
-  .factory 'enumerator', ->
+  .factory 'Enumerator', ->
     class Enumerator
       constructor: (@token=['a']) ->
       
@@ -35,7 +35,5 @@ angular.module 'chr'
 
       reset: ->
         @token = ['a']
-
-    return new Enumerator()
       
     

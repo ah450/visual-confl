@@ -7,8 +7,7 @@
 
   function buildBuiltInConstraint(left, operator, right) {
     return {
-      left: left,
-      right: right,
+      args: [left, right],
       operator: operator,
       name: 'builtin'
     }
@@ -28,6 +27,10 @@
       ruleBody.remove = []
     }
     ruleBody.guard = guard
+    if (ruleBody.guard == null) {
+      ruleBody.guard = []
+    }
+
     ruleBody.add = bodyConstraints
     return ruleBody;
   }
@@ -71,7 +74,7 @@
   }
 }
 
-start
+program
   = _ rules:rule+ {return rules}
 
 rule
@@ -136,6 +139,9 @@ identifier
 
 integer
   = digits:[0-9]+ { return parseInt(digits.join(""), 10)}
+
+input
+  = constraints:constraintList _ "." [\n\r]* {return constraints}
 
 _ "whitespace"
   = [ \t]*

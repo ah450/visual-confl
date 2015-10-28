@@ -1,10 +1,8 @@
 angular.module 'chr'
-  .factory 'unify', ->
+  .factory 'unify', (isVariable) ->
     ###
     Helper for testing
     ###
-    isVariable = (x) ->
-      return typeof x == 'string'
     unify = (formulaOne, formulaTwo, substitutions) ->
       return false if formulaOne.length != formulaTwo.length
       return true if formulaOne.length == 0
