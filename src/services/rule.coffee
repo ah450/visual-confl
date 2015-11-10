@@ -64,7 +64,6 @@ angular.module 'chr'
                 # False if they fully match in order to filter out, meaning it
                 # Does not survive the rule's application
                 return not equals removedConstraint.args,  constraint.args
-              break
             # True if it's not in remove
             return true
       
@@ -82,4 +81,8 @@ angular.module 'chr'
       @property 'isSimpigation',
         get: ->
           @type == @TYPES[2]
+
+      @property 'hasGuard',
+        get: ->
+          @guard.length isnt 0
 
