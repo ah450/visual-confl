@@ -33,6 +33,9 @@ angular.module 'chr'
 
       introduce: ->
         constraint = @GSU.pop()
+        @introductionHelper constraint
+
+      introductionHelper: (constraint) ->
         @CU.push constraint
         (@CUHASH[constraint.name] or=[]).push constraint
 
@@ -74,6 +77,7 @@ angular.module 'chr'
 
       applicableSimplificationHelper: ->
         @applicableSimplifications = []
+        return if @CU.length == 0
         for i in [1..@CU.length]
           if @chrProgram.simplificationRules.hasOwnProperty i
             # Has rules with head of length i
@@ -83,7 +87,8 @@ angular.module 'chr'
 
       applicablePropagationHelper: ->
         @tokens = []
-        for i in [1...@CU.length]
+        return if @CU.length == 0
+        for i in [1..@CU.length]
           if @chrProgram.propagationRules.hasOwnProperty i
             # Has rules with head of length i
             @chrProgram.propagationRules[i].forEach (r) =>
@@ -131,9 +136,13 @@ angular.module 'chr'
       ###
       simplificationApplicableHelper: (rule) ->
         applicableConstraints = 0
+        # Iterate over the constraints in the rule's head
         for headConstraint in rule.head
           # Check if we have constraints with same name
           return false if not @CUHASH.hasOwnProperty headConstraint.name
+          # Try to unify one of the constraints in the current store
+          #  with the same name as the head constraint with it.
+          #  If at least one unifies there is no reason to find more matches
           for constraint in @CUHASH[headConstraint.name]
             if @chrProgram.unify constraint, headConstraint
               applicableConstraints++
@@ -147,16 +156,76 @@ angular.module 'chr'
       ###
       propagationApplicableHelper: (rule) ->
         applicableConstraints = 0
+        # Iterate over the constraints in the rule's head
         for headConstraint in rule.head
           # Check if we have constraints with same name
           return false if not @CUHASH.hasOwnProperty headConstraint.name
+          # Check if we have constraints with same name
           for constraint in @CUHASH[headConstraint.name]
+            # Ignore constraint if it has already been used with this token
             continue if constraint.id in (@appliedTokens[rule.name] or=[])
+            # Try to unify one of the constraints in the current store
+            #  with the same name as the head constraint with it.
+            #  If at least one unifies there is no reason to find more matches
             if @chrProgram.unify constraint, headConstraint
               applicableConstraints++
               break
         return applicableConstraints == rule.head.length
 
+      propagate: ->
+        # Grab first applicable propagation rule
+        rule = @tokens[0]
+        # Collect constraints
+        constraints = []
+        ids =  (@appliedTokens[rule.name] or=[])
+        for hc in rule.head
+          ###
+          Make sure not to use a previously constraint
+          ###
+          for constraint in @CUHASH[hc.name]
+            continue if constraint.id in ids
+            constraints.push constraint
+            ids.push constraint.id
+        # TODO check variable unification
+        # TODO check guards
+        @appliedTokens[rule.name] = ids
+        @applyBody rule, constraints
+
+        
+      
+      applyBody: (rule, userConstraints) ->
+        # TODO handle variable re-assignment
+        rule.add.forEach (constraint) =>
+          newConstraint = _.assign({}, constraint)
+          @chrProgram.addID newConstraint
+          @introductionHelper newConstraint
+
+      simplify: ->
+        # Grab any applicable simplification rule
+        rule = @applicableSimplifications[0]
+        # Collect constraints
+        constraints = []
+        for hc in rule.head
+          for constraint in @CUHASH[hc.name]
+            constraints.push constraint
+        # TODO check variable unification
+        # TODO check guards
+        # Remove head constraints
+        @handleSurvive rule, constraints
+        # Add body constraints
+        @applyBody rule, constraints
+
+      handleSurvive: (rule, constraints) ->
+        removed = constraints.filter (e) ->
+          e not in rule.survive
+        removedIDs = (c.id for c in removed)
+        removed.forEach (constraint) =>
+          @CUHASH[constraint.name] =
+            @CUHASH[constraint.name].filter (other) ->
+              other.id not in removedIDs
+        @CU = @CU.filter (other) ->
+          other.id not in removedIDs
+          
       ###
       Takes a step if one is applicable
       ###

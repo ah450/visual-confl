@@ -28,7 +28,6 @@ angular.module 'chr'
         # Group propagation rules
         propagationRules = @rules.filter (r) ->
           r.isPropagation
-
         @propagationRules = groupByHeadArityHelper propagationRules
 
       # Generates a brand new variable name
@@ -56,21 +55,19 @@ angular.module 'chr'
       isImplied: (kb, goals) ->
         true
 
-      ###
-        Attempts to unify two formulas.
-        Expects formulas to be arrays of constraints or variables and atoms
-        @returns Object representing substitutions, false if can't unify
-      ###
       parseInput: (inputSrc)->
         input = PEGParser.parse inputSrc, {
           startRule: 'input'
         }
         @addID constraint for constraint in input
 
-      unify: (lhs, rhs) ->
-        substitutions = {}
+      ###
+        Attempts to unify two formulas.
+        Expects formulas to be arrays of constraints or variables and atoms
+        @returns Object representing substitutions, false if can't unify
+      ###
+      unify: (lhs, rhs, substitutions={}) ->
         return false if not unify lhs, rhs, substitutions
         return substitutions
-        
 
     
