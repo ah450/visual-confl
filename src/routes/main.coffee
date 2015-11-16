@@ -3,7 +3,7 @@ angular.module 'vconfl'
 
     main =
       name: 'main'
-      url: '/'
+      url: ''
       abstract: true
       templateUrl: 'root.html'
 
@@ -16,7 +16,7 @@ angular.module 'vconfl'
           controller: 'HomeController'
 
     about =
-      name: 'about.home'
+      name: 'main.about'
       url: '/about'
       views:
         'content@main':

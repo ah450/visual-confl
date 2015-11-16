@@ -1,5 +1,5 @@
 angular.module 'vconfl'
-  .directive 'contenteditable', ($sce) ->
+  .directive 'contenteditable', (srcTransform) ->
     directive =
       restrict: 'A'
       require: '?ngModel'
@@ -10,7 +10,8 @@ angular.module 'vconfl'
           html = '' if html == '<br>'
           ngModel.$setViewValue html
         ngModel.$render = ->
-          element.html $sce.getTrustedHtml ngModel.$viewValue || ''
+          transformedHTML = srcTransform(ngModel.$viewValue || '\n')
+          element.html transformedHTML
         element.on 'blur keyup change', ->
           scope.$evalAsync read
 
