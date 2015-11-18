@@ -1,14 +1,61 @@
 .editor-wrapper {
   word-break: keep-all;
   #source {
+    display: inline-block;
     width: 40%;
     line-height: 1.5;
     max-height: 80vh;
     overflow: auto;
+    min-height: 30vh;
+    .CodeMirror {
+      background: transparent;
+    }
+
+    .CodeMirror-gutters {
+      background: $md-clr-blue-grey-50;
+      border: none;
+    }
+    .CodeMirror-linenumber {
+      color: $md-clr-blue-grey-200;
+      border-left: 1px solid $md-clr-blue-grey-100;
+      border-bottom: 1px solid $md-clr-blue-grey-100;
+    }
+
+    .CodeMirror-code > div:first-child {
+      .CodeMirror-linenumber {
+        border-top: 1px solid $md-clr-blue-grey-100;
+      }
+    }
   }
 
   #results {
+    position: relative;
+    display: inline-block;
     line-height: 1.5;
+    max-height: 80vh;
+    overflow: auto;
+    width: 40%;
+    min-height: 30vh;
+    margin-left: 5vw;
+  }
+  .input {
+    width: 40%;
+    color: $md-clr-blue-grey-800;
+    margin-left: calc(40% + 5vw);
+    margin-top: 1em;
+    input {
+      background: transparentize(white, 0.7);
+      box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.5);
+    }
+  }
+  .error {
+    display: block;
+    max-height: 15vh;
+    overflow: auto;
+    width: 40%;
+    margin-top: 2vh;
+    margin-left: calc(20% + 2.5vw);
+    color: $md-clr-red-500;
   }
 }
 
