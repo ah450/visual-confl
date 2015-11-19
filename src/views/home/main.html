@@ -1,7 +1,31 @@
 <section class="editor-wrapper">
-  <div id="source" class="flow-text paper mono-space">
-    <div class="content show-lines" contenteditable data-ng-model="models.programSrc"></div>
+  <div id="source" class="flow-text paper mono-space light-weight">
+    <div class="content" data-ui-codemirror
+    data-ui-codemirror-opts="editorOptions"
+    data-ng-model="models.programSrc"></div>
   </div>
-  <div id="results" class="paper mono-space">
+  <div id="results" class="flow-text paper mono-space light-weight">
+    <div class="content">
+      <div class="history show-lines">
+        <!-- Line -->
+        <div class="line" data-ng-repeat="item in models.history track by $index">
+          <span class="index"><i>{{$index + 1}}</i></span>
+          <p class="text">{{item}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="paper flow-text mono-space light-weight input">
+    <div class="content">
+      <label for="prompt" data-ng-hide="running">$</label>
+      <label for="prompt" class="refresh-spinner" data-ng-show="running"><i class="material-icons">&#xE5D5;</i></label>
+      <input id="prompt" data-ng-model="models.prompt"
+      type="text" data-ui-event="{keydown: 'promptKey($event)'}"
+      data-ng-disabled="running"
+      ></input>
+    </div>
+  </div>
+  <div class="paper flow-text mono-space light-weight error" data-ng-if="!isValidProgram">
+  {{models.errorMessage}}
   </div>
 </section>
