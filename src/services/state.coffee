@@ -217,7 +217,12 @@ angular.module 'chr'
 
       handleSurvive: (rule, constraints) ->
         removed = constraints.filter (e) ->
-          e not in rule.survive
+          remove = true
+          rule.survive.forEach (s) ->
+            if s.name == e.name
+              remove = false
+              return
+          return remove
         removedIDs = (c.id for c in removed)
         removed.forEach (constraint) =>
           @CUHASH[constraint.name] =
