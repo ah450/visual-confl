@@ -30,7 +30,9 @@
       ></input>
     </div>
   </div>
-  <div class="paper flow-text mono-space light-weight error" data-ng-if="!isValidProgram">
+  <div class="paper flow-text mono-space light-weight error-block"
+  data-ng-class="{show: !isValidProgram, hide: isValidProgram}"
+  >
   {{models.errorMessage}}
   </div>
 </section>

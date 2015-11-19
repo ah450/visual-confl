@@ -2,3 +2,17 @@
   animation: spin 1s linear 0s infinite;
   transform-origin: center;
 }
+
+#source {
+  animation: fade-in 1s ease-in;
+}
+
+#results {
+  animation: fade-in 1.8s linear, slide-in-down 1s ease-out;
+}
+
+.editor-wrapper {
+  .input {
+    animation: fade-in 1.8s linear, slide-in-right 1s ease-out;
+  }
+}

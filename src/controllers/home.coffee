@@ -38,7 +38,6 @@ angular.module 'vconfl'
       try
         program = parseCHR src
         $scope.isValidProgram = true
-        $scope.models.errorMessage = ''
         return true
       catch syntaxError
         $scope.isValidProgram = false
