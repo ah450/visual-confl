@@ -69,7 +69,7 @@
     return {
       name: 'true',
       args: [],
-      operator: 'false'
+      operator: 'true'
     }
   }
 }
