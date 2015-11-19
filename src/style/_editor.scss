@@ -59,3 +59,19 @@
   }
 }
 
+
+// History styling
+#results .history {
+  .line p {
+    font-size: 0.5em;
+  }
+  .result {
+    color: $md-clr-blue-900;
+  }
+  .error {
+    color: $md-clr-red-500;
+  }
+  .prompt {
+    color: black;
+  }
+}

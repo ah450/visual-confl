@@ -59,16 +59,24 @@ angular.module 'vconfl'
           results = state.CU.map (c) ->
             c.name
           results = results.join ', '
-          $scope.models.history.push "#{results}."
+          $scope.models.history.push {
+            text: "#{results}.",
+            result: true
+          }
         else
-          history.push 'false'
+          history.push {
+            text: 'false',
+            result: true
+          }
         $scope.running = false
       catch syntaxError
         $scope.running = false
         console.error syntaxError
-        $scope.models.history.push syntaxError.message
+        $scope.models.history.push {
+          text: syntaxError.message,
+          error: true
+        }
       
-
     $scope.$watch 'models.programSrc', (newValue) ->
       func = _.partial parseProgram, newValue
       $scope.$evalAsync func
@@ -77,6 +85,9 @@ angular.module 'vconfl'
       if event.keyCode == keyKodes.special.enter
         if $scope.isValidProgram and $scope.models.prompt.length > 0
           $scope.running = true
-          $scope.models.history.push $scope.models.prompt
+          $scope.models.history.push {
+            text: $scope.models.prompt,
+            prompt: true
+          }
           func = _.partial parseInput, $scope.models.prompt
           $scope.$evalAsync func

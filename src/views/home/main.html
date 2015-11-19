@@ -10,7 +10,12 @@
         <!-- Line -->
         <div class="line" data-ng-repeat="item in models.history track by $index">
           <span class="index"><i>{{$index + 1}}</i></span>
-          <p class="text">{{item}}</p>
+          <p class="text"
+          data-ng-class="{prompt: item.prompt,
+          error: item.error,
+          result: item.result
+          }"
+          >{{item.text}}</p>
         </div>
       </div>
     </div>
