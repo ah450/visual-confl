@@ -95,6 +95,7 @@ operator
 
 propagation
   = "=>" {return OPERATOR.PROPAGATION}
+  / "==>" {return OPERATOR.PROPAGATION}
 
 simplification
   = "<=>" {return OPERATOR.simplification}
