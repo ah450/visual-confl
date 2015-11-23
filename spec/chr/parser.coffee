@@ -9,6 +9,22 @@ describe 'CHRProgram', ->
   beforeEach inject (_parseCHR_) ->
     @parseCHR = _parseCHR_
 
+  describe 'rule order', ->
+    beforeEach ->
+      @programSrc = """
+        first @ a <=> true.
+        second @ b => true.
+        third @ d \\ a <=> k.
+      """
+      @parsedProgram = @parseCHR @programSrc
+
+    it 'should preserve source order', ->
+      expect(@parsedProgram.rules[0]).to.have.property('name', 'first')
+      expect(@parsedProgram.rules[1]).to.have.property('name', 'second')
+      expect(@parsedProgram.rules[2]).to.have.property('name', 'third')
+
+
+
   describe 'syntax errors', ->
     it 'should throw syntax errors', ->
       programSrc = "k( a, b(), c => true."

@@ -25,7 +25,7 @@ describe 'State', ->
         @parsedInput = @parsedProgram.parseInput @inputSrc
         @state = @parsedProgram.newState()
 
-      it 'should not have any possible combinations', ->
+      it 'should not have any possible computations', ->
         expect(@state.hasComputation).to.be.false
 
       it 'should be considered a success state', ->

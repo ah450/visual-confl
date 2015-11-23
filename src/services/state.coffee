@@ -2,8 +2,10 @@ angular.module 'chr'
   .factory 'State', (isBuiltInConstraint) ->
     class State
       constructor: (@chrProgram, @GSU=[], @GSB=[], @CU=[], @CUHASH=[],
-        @BI=[], @tokens=[], @variables=[], @appliedTokens={}) ->
-          @applicableSimplifications = []
+        @BI=[]) ->
+        @applicableRules = []
+        @appliedPropagations = {}
+        @variables = []
         
       detectVariables: ->
         @variables = []
@@ -29,10 +31,10 @@ angular.module 'chr'
           @GSB.length isnt 0
 
       solve: ->
-        @BI.push @GSB.pop()
+        @BI.push @GSB.shift()
 
       introduce: ->
-        constraint = @GSU.pop()
+        constraint = @GSU.shift()
         @introductionHelper constraint
 
       introductionHelper: (constraint) ->
@@ -47,7 +49,8 @@ angular.module 'chr'
       ###
       @property 'canPropagate',
         get: ->
-          @tokens.length isnt 0
+           _.any @applicableRules, (rule) ->
+            rule.isPropagation
 
       ###
       Simplification is applying a simplification or simpigation rule
@@ -55,7 +58,8 @@ angular.module 'chr'
       ###
       @property 'canSimplify',
         get: ->
-          @applicableSimplifications.length isnt 0
+          _.any @applicableRules, (rule) ->
+            not rule.isPropagation
 
       @property 'isFailed',
         get: ->
@@ -75,31 +79,21 @@ angular.module 'chr'
       normalize: ->
         @normalizeApplicableHelper()
 
-      applicableSimplificationHelper: ->
-        @applicableSimplifications = []
-        return if @CU.length == 0
-        for i in [1..@CU.length]
-          if @chrProgram.simplificationRules.hasOwnProperty i
-            # Has rules with head of length i
-            @chrProgram.simplificationRules[i].forEach (r) =>
-              if @isApplicable r
-                @applicableSimplifications.push r
+      applicableSimplificationHelper: (rule) ->
+        return false if @CU.length < rule.head.length
+        return @isApplicable rule
 
-      applicablePropagationHelper: ->
-        @tokens = []
-        return if @CU.length == 0
-        for i in [1..@CU.length]
-          if @chrProgram.propagationRules.hasOwnProperty i
-            # Has rules with head of length i
-            @chrProgram.propagationRules[i].forEach (r) =>
-              if @isApplicable r
-                @tokens.push r
-
+      applicablePropagationHelper: (rule) ->
+        return false if @CU.length < rule.head.length
+        return @isApplicable rule
 
       normalizeApplicableHelper: ->
-        @applicableSimplificationHelper()
-        @applicablePropagationHelper()
-
+        @applicableRules = []
+        for rule in @chrProgram.rules
+          if rule.isPropagation
+            @applicableRules.push rule if @applicableSimplificationHelper rule
+          else
+            @applicableRules.push rule if @applicablePropagationHelper rule
 
       ###
       Adds a goal, either a user defined constraint or a built in constraint.
@@ -163,7 +157,7 @@ angular.module 'chr'
           # Check if we have constraints with same name
           for constraint in @CUHASH[headConstraint.name]
             # Ignore constraint if it has already been used with this token
-            continue if constraint.id in (@appliedTokens[rule.name] or=[])
+            continue if constraint.id in (@appliedPropagations[rule.name] or=[])
             # Try to unify one of the constraints in the current store
             #  with the same name as the head constraint with it.
             #  If at least one unifies there is no reason to find more matches
@@ -172,12 +166,10 @@ angular.module 'chr'
               break
         return applicableConstraints == rule.head.length
 
-      propagate: ->
-        # Grab first applicable propagation rule
-        rule = @tokens[0]
+      propagate: (rule) ->
         # Collect constraints
         constraints = []
-        ids =  (@appliedTokens[rule.name] or=[])
+        ids =  (@appliedPropagations[rule.name] or=[])
         for hc in rule.head
           ###
           Make sure not to use a previously constraint
@@ -188,10 +180,8 @@ angular.module 'chr'
             ids.push constraint.id
         # TODO check variable unification
         # TODO check guards
-        @appliedTokens[rule.name] = ids
+        @appliedPropagations[rule.name] = ids
         @applyBody rule, constraints
-
-        
       
       applyBody: (rule, userConstraints) ->
         # TODO handle variable re-assignment
@@ -200,9 +190,7 @@ angular.module 'chr'
           @chrProgram.addID newConstraint
           @introductionHelper newConstraint
 
-      simplify: ->
-        # Grab any applicable simplification rule
-        rule = @applicableSimplifications[0]
+      simplify: (rule) ->
         # Collect constraints
         constraints = []
         for hc in rule.head
@@ -237,14 +225,11 @@ angular.module 'chr'
       takeStep: ->
         if @canSolve
           @takeAction @solve.bind @
-        else if @canSimplify
-          @takeAction @simplify.bind @
-        else if @canPropagate
-          @takeAction @propagate.bind @
+        else if @applicableRules.length > 0
+          rule = @applicableRules[0]
+          if rule.isPropagation
+            @takeAction @propagate.bind @, rule
+          else
+            @takeAction @simplify.bind @, rule
         else if @canIntroduce
           @takeAction @introduce.bind @
-
-
-        
-      
-    

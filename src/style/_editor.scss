@@ -8,7 +8,10 @@
     overflow: auto;
     min-height: 30vh;
     .CodeMirror {
-      // @include noise(transparentize(white, 0.85));
+      background: transparent;
+      &::before {
+        @include noise(transparentize(white, 0.6))
+      }
     }
 
     .CodeMirror-gutters {

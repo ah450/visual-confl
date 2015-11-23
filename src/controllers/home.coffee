@@ -78,7 +78,10 @@ angular.module 'vconfl'
       
     $scope.$watch 'models.programSrc', (newValue) ->
       func = _.partial parseProgram, newValue
-      $scope.$evalAsync func
+      console.log newValue
+      $scope.$evalAsync func unless (
+        angular.isUndefined(newValue) or newValue is null or
+        newValue.length is 0)
     
     $scope.promptKey = (event)->
       if event.keyCode == keyKodes.special.enter
