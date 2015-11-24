@@ -9,7 +9,7 @@
   "scripts": {
     "test": "gulp test",
     "dist": "gulp dist",
-    "dev": "gulp"
+    "dev": "gulp dev"
   },
   "author": "Ahmed H. Ismail <ahm3d.hisham@gmail.com>",
   "license": "GPL-3.0",
