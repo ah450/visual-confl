@@ -88,7 +88,7 @@ angular.module 'chr'
         get: ->
           if @CU.length > 0
             return @CU.concat @BI.filter (c) ->
-              c.name inst 'true'
+              c.name isnt 'true'
           else
             return @BI
 
