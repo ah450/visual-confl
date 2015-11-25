@@ -44,8 +44,7 @@ angular.module 'chr'
       solveHelper: (constraint) ->
 
         if constraint.name in ['false', 'true']
-          hasWithName = _.any @BI, (c) ->
-            c.name is constraint.name
+          hasWithName = _.any @BI, 'name', constraint.name
           @BI.push constraint if not hasWithName
         else
           @BI.push constraint
@@ -58,8 +57,7 @@ angular.module 'chr'
       ###
       @property 'canPropagate',
         get: ->
-           _.any @applicableRules, (rule) ->
-            rule.isPropagation
+           _.any @applicableRules, 'isPropagation'
 
       ###
       Simplification is applying a simplification or simpigation rule
@@ -67,12 +65,11 @@ angular.module 'chr'
       ###
       @property 'canSimplify',
         get: ->
-          _.any @applicableRules, (rule) ->
-            not rule.isPropagation
+          _.any @applicableRules, 'isPropagation', false
 
       @property 'isFailed',
         get: ->
-          "false" in @BI
+          _.any @BI, 'name', 'false'
 
       @property 'isSuccess',
         get: ->

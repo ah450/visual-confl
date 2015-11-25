@@ -65,8 +65,7 @@ describe 'No variables no guards bugs', ->
         it 'should be a success state', ->
           expect(@state.isSuccess).to.be.true
 
-        it 'Should have d and true in its constraint store', ->
-          expect(@state.CU.length).to.eql 2
+        it 'Should have d in its constraint store', ->
+          expect(@state.CU.length).to.eql 1
           expect(@state.CU[0]).to.have.property('name', 'd')
-          expect(@state.CU[1]).to.have.property('name', 'true')
 
