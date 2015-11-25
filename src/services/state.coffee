@@ -31,7 +31,7 @@ angular.module 'chr'
           @GSB.length isnt 0
 
       solve: ->
-        @BI.push @GSB.shift()
+        @solveHelper @GSB.shift()
 
       introduce: ->
         constraint = @GSU.shift()
@@ -40,6 +40,15 @@ angular.module 'chr'
       introductionHelper: (constraint) ->
         @CU.push constraint
         (@CUHASH[constraint.name] or=[]).push constraint
+
+      solveHelper: (constraint) ->
+
+        if constraint.name in ['false', 'true']
+          hasWithName = _.any @BI, (c) ->
+            c.name is constraint.name
+          @BI.push constraint if not hasWithName
+        else
+          @BI.push constraint
 
 
       ###
@@ -72,6 +81,17 @@ angular.module 'chr'
       @property 'hasComputation',
         get: ->
           @canIntroduce || @canSolve || @canSimplify || @canPropagate
+
+      # Returns a clean version of the store.
+      # For display
+      @property 'constraintStore',
+        get: ->
+          if @CU.length > 0
+            return @CU.concat @BI.filter (c) ->
+              c.name inst 'true'
+          else
+            return @BI
+
 
       ###
       Normalization function
@@ -187,8 +207,11 @@ angular.module 'chr'
         # TODO handle variable re-assignment
         rule.add.forEach (constraint) =>
           newConstraint = _.assign({}, constraint)
-          @chrProgram.addID newConstraint
-          @introductionHelper newConstraint
+          if isBuiltInConstraint newConstraint
+            @solveHelper newConstraint
+          else
+            @chrProgram.addID newConstraint
+            @introductionHelper newConstraint
 
       simplify: (rule) ->
         # Collect constraints

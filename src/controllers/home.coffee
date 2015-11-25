@@ -55,7 +55,7 @@ angular.module 'vconfl'
         while state.hasComputation
           state.takeStep()
         if state.isSuccess
-          results = state.CU.map (c) ->
+          results = state.constraintStore.map (c) ->
             c.name
           results = results.join ', '
           $scope.models.history.push {
