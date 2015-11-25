@@ -54,19 +54,13 @@ angular.module 'vconfl'
           state.addGoal goal
         while state.hasComputation
           state.takeStep()
-        if state.isSuccess
-          results = state.constraintStore.map (c) ->
-            c.name
-          results = results.join ', '
-          $scope.models.history.push {
-            text: "#{results}.",
-            result: true
-          }
-        else
-          history.push {
-            text: 'false',
-            result: true
-          }
+        results = state.constraintStore.map _.property 'name'
+        results = results.join ', '
+        text = "#{results}."
+        $scope.models.history.push {
+          text: text,
+          result: true
+        }
         $scope.running = false
       catch syntaxError
         $scope.running = false

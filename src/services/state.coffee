@@ -6,6 +6,7 @@ angular.module 'chr'
         @applicableRules = []
         @appliedPropagations = {}
         @variables = []
+        @hasFalse = false
         
       detectVariables: ->
         @variables = []
@@ -42,10 +43,13 @@ angular.module 'chr'
         (@CUHASH[constraint.name] or=[]).push constraint
 
       solveHelper: (constraint) ->
-
         if constraint.name in ['false', 'true']
-          hasWithName = _.any @BI, 'name', constraint.name
-          @BI.push constraint if not hasWithName
+          if not @hasFalse
+            hasWithName = _.any @BI, 'name', constraint.name
+            @BI.push constraint if not hasWithName
+            @hasFalse or= constraint.name is 'false'
+            if @hasFalse
+              _.remove @BI, 'name', 'true'
         else
           @BI.push constraint
 
@@ -69,7 +73,7 @@ angular.module 'chr'
 
       @property 'isFailed',
         get: ->
-          _.any @BI, 'name', 'false'
+          @hasFalse
 
       @property 'isSuccess',
         get: ->

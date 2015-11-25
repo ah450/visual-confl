@@ -15,6 +15,14 @@ angular.module 'vconfl'
           templateUrl: 'home/main.html'
           controller: 'HomeController'
 
+    confluence =
+      name: 'confl.home'
+      url: '/check'
+      views:
+        'content@main':
+          templateUrl: 'home/check.html'
+          controller: 'ConfluenceCheckController'
+
     about =
       name: 'main.about'
       url: '/about'
