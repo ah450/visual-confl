@@ -33,6 +33,15 @@ describe 'CHRProgram', ->
 
 
   describe 'correct programs', ->
+
+    it 'should correctly assign ids', ->
+      programSrc = """
+      leq(X,Y), leq(Y, Z) => leq(X, Z).
+      leq(X, Y), leq(Y, X) <=> X = Y.
+      """
+      parsed = @parseCHR programSrc
+      expect(parsed.rules[0].id).to.not.eql parsed.rules[1].id
+
     it "should correctly parse unamed version", ->
       programSrc = """
       leq(X,Y), leq(Y, Z) => leq(X, Z).

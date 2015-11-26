@@ -4,6 +4,7 @@
     PROPAGATION: 0,
     SIMPLIFICATION: 1
   }
+  var ID = Number.MIN_SAFE_INTEGER
 
   function buildBuiltInConstraint(left, operator, right) {
     return {
@@ -42,9 +43,10 @@
     }
   }
 
-  function transformRule(name, body) {
-    body.name = name? name : guid()
-    return body
+  function transformRule(name, rule) {
+    rule.name = name? name : guid()
+    rule.id = ID++
+    return rule
   }
 
   function guid() {

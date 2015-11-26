@@ -18,6 +18,8 @@ angular.module 'chr'
           @type = @TYPES[2]
         else
           @type = @TYPES[1]
+
+        @id = @parsed_id
   
         @variables = []
         variableMap = {}

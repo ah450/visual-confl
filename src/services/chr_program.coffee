@@ -19,16 +19,14 @@ angular.module 'chr'
         @rules = (new Rule rule, @ for rule in rules)
         @currentID = Number.MIN_SAFE_INTEGER
         # Organize rules
+
         # Group simplification rules
-        simplificationRules = @rules.filter (r) ->
+        @simplificationRules = @rules.filter (r) ->
           r.isSimplification || r.isSimpigation
 
-        @simplificationRules = groupByHeadArityHelper simplificationRules
-
         # Group propagation rules
-        propagationRules = @rules.filter (r) ->
+        @propagationRules = @rules.filter (r) ->
           r.isPropagation
-        @propagationRules = groupByHeadArityHelper propagationRules
 
       # Generates a brand new variable name
       getNewVariableName: ->
@@ -67,7 +65,6 @@ angular.module 'chr'
         @returns Object representing substitutions, false if can't unify
       ###
       unify: (lhs, rhs, substitutions={}) ->
-        return false if not unify lhs, rhs, substitutions
-        return substitutions
+        unify lhs, rhs, substitutions
 
     

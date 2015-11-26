@@ -101,11 +101,9 @@ angular.module 'chr'
         @normalizeApplicableHelper()
 
       applicableSimplificationHelper: (rule) ->
-        return false if @CU.length < rule.head.length
         return @isApplicable rule
 
       applicablePropagationHelper: (rule) ->
-        return false if @CU.length < rule.head.length
         return @isApplicable rule
 
       normalizeApplicableHelper: ->
