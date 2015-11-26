@@ -1,5 +1,5 @@
 angular.module 'vconfl'
-  .controller 'HomeController', ($scope, parseCHR, $q) ->
+  .controller 'HomeController', ($scope, parseCHR, confluenceData, $q) ->
     initialProgram = """
     simplification @ a, b <=> c.
     propagation @ a => b.
@@ -72,10 +72,14 @@ angular.module 'vconfl'
       
     $scope.$watch 'models.programSrc', (newValue) ->
       func = _.partial parseProgram, newValue
-      console.log newValue
-      $scope.$evalAsync func unless (
-        angular.isUndefined(newValue) or newValue is null or
+      if ( angular.isUndefined(newValue) or newValue is null or
         newValue.length is 0)
+          $scope.isValidProgram = false
+          program = null
+      else
+        $scope.$evalAsync func
+        
+  
     
     $scope.promptKey = (event)->
       if event.keyCode == keyKodes.special.enter
@@ -87,3 +91,6 @@ angular.module 'vconfl'
           }
           func = _.partial parseInput, $scope.models.prompt
           $scope.$evalAsync func
+
+    $scope.checkConfluence = ->
+      confluenceData.program = program

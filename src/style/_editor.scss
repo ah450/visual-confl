@@ -4,9 +4,8 @@
     display: inline-block;
     width: 40%;
     line-height: 1.5;
-    max-height: 80vh;
-    overflow: auto;
-    min-height: 30vh;
+    height: 35vh;
+    vertical-align: middle;
     .CodeMirror {
       background: transparent;
       &::before {
@@ -34,18 +33,16 @@
   #results {
     position: relative;
     display: inline-block;
+    vertical-align: middle;
     line-height: 1.5;
-    max-height: 80vh;
     overflow: auto;
     width: 40%;
-    min-height: 30vh;
+    height: 35vh;
     margin-left: 5vw;
   }
   .input {
     width: 40%;
     color: $md-clr-blue-grey-800;
-    margin-left: calc(40% + 5vw);
-    margin-top: 1em;
     input {
       background: transparentize(white, 0.7);
       box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.5);
@@ -84,5 +81,21 @@
   }
   .prompt {
     color: black;
+  }
+}
+
+#inputWrapper {
+  width: calc(100%);
+  margin: 1em auto 3em auto;
+  position: relative;
+  .input {
+    position: absolute;
+    // space left on the right by results
+    // Results is 40% with a 5vw left margin while on it's left source is 40%
+    right: calc(20% - 5vw - 5px);
+    width: 40%;
+  }
+  > button {
+    margin-left: 10%;
   }
 }
