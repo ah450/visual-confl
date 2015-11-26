@@ -22,8 +22,16 @@ angular.module 'chr'
       possibilePairs.filter (pair) ->
         heads = Combinatorics.cartesianProduct pair[0].head, pair[1].head
           .toArray()
-        _.any heads, (headPair) ->
-          chrProgram.unify [headPair[0]], [headPair[1]]
+        overlap = []
+        heads.forEach (headPair) ->
+          if chrProgram.unify [headPair[0]], [headPair[1]]
+            overlap.push {
+              first: headPair[0],
+              second: headPair[1]
+            }
+        pair.push overlap
+        return overlap.length > 0
+
 
 
     return findCriticalPairs

@@ -44,30 +44,9 @@ angular.module 'chr'
         @add = @parsed_add.map variableRenamer
         @guard = @parsed_guard.map variableRenamer
 
+        @computeSurvive()
+        @computeRepresentation()
 
-
-        ###
-        @survive is an array of the head constraints that won't be removed
-        by the application of this rule
-        returns an array of atoms
-        ###
-        if @isPropagation
-          @survive = @head
-        else if @isSimplification
-          @survive = []
-        else
-          @survive = @head.filter (constraint) =>
-            # return true if constraint is not in removed
-            equals = (a, b) ->
-              a.length is b.length and a.every (elem, i) ->
-                elem is b[i]
-            for removedConstraint in @remove
-              if removedConstraint.name is constraint.name
-                # False if they fully match in order to filter out, meaning it
-                # Does not survive the rule's application
-                return not equals removedConstraint.args,  constraint.args
-            # True if it's not in remove
-            return true
       
       @property 'name',
         get: ->
@@ -87,4 +66,45 @@ angular.module 'chr'
       @property 'hasGuard',
         get: ->
           @guard.length isnt 0
+
+      computeRepresentation: ->
+        operator = if @isPropagation then '=>' else "<=>"
+        body = _.pluck @body, 'name'
+          .join ', '
+
+        if @isSimpigation
+          removeNames = _.pluck @remove, 'name'
+          keep = _.pluck @head, 'name'
+            .filter (c) ->
+              c not in removeNames
+          head = "#{keep.join(', ')} \\ #{removeNames.join(', ')}"
+        else
+          head = _.pluck @head, 'name'
+            .join ', '
+
+        @representation = "#{head} #{operator} #{body}."
+
+      ###
+      @survive is an array of the head constraints that won't be removed
+      by the application of this rule
+      returns an array of atoms
+      ###
+      computeSurvive: ->
+        if @isPropagation
+          @survive = @head
+        else if @isSimplification
+          @survive = []
+        else
+          @survive = @head.filter (constraint) =>
+            # return true if constraint is not in removed
+            equals = (a, b) ->
+              a.length is b.length and a.every (elem, i) ->
+                elem is b[i]
+            for removedConstraint in @remove
+              if removedConstraint.name is constraint.name
+                # False if they fully match in order to filter out, meaning it
+                # Does not survive the rule's application
+                return not equals removedConstraint.args,  constraint.args
+            # True if it's not in remove
+            return true
 

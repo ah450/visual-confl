@@ -16,7 +16,7 @@ angular.module 'vconfl'
           controller: 'HomeController'
 
     confluence =
-      name: 'confl.home'
+      name: 'main.check'
       url: '/check'
       views:
         'content@main':
@@ -34,3 +34,4 @@ angular.module 'vconfl'
       .state main
       .state home
       .state about
+      .state confluence

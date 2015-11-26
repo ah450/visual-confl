@@ -1,5 +1,5 @@
 angular.module 'vconfl'
-  .controller 'HomeController', ($scope, parseCHR, confluenceData, $q) ->
+  .controller 'HomeController', ($scope, parseCHR, confluenceData, $q, $state) ->
     initialProgram = """
     simplification @ a, b <=> c.
     propagation @ a => b.
@@ -94,3 +94,4 @@ angular.module 'vconfl'
 
     $scope.checkConfluence = ->
       confluenceData.program = program
+      $state.go 'main.check'
