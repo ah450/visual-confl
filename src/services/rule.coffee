@@ -43,7 +43,7 @@ angular.module 'chr'
         @remove = @parsed_remove.map variableRenamer
         @add = @parsed_add.map variableRenamer
         @guard = @parsed_guard.map variableRenamer
-
+        @name = @parsed_name if @parsed_generated_name
         @computeSurvive()
         @computeRepresentation()
 
@@ -81,8 +81,8 @@ angular.module 'chr'
         else
           head = _.pluck @head, 'name'
             .join ', '
-
-        @representation = "#{head} #{operator} #{body}."
+        name = if not @parsed_generated_name then "#{@name} @" else ''
+        @representation = "#{name} #{head} #{operator} #{body}."
 
       ###
       @survive is an array of the head constraints that won't be removed

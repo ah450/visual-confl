@@ -45,6 +45,13 @@
 
   function transformRule(name, rule) {
     rule.name = name? name : guid()
+    if (name) {
+      rule.name = name
+      rule.generated_name = false
+    } else {
+      rule.name = guid();
+      rule.generated_name = true
+    }
     rule.id = ID++
     return rule
   }
@@ -80,7 +87,7 @@ program
   = _ rules:rule+ {return rules}
 
 rule
-  = name:ruleName? body:ruleBody _ "." [\n\r]* {return transformRule(name, body)}
+  = name:ruleName? body:ruleBody _ "." [ \t\n\r]* {return transformRule(name, body)}
 
 ruleBody
   = h1:constraintList _ simpigationRemove:simpigation? _ op:operator _ g:guard? _ bodyConstraints:constraintList {return transformBody(h1, simpigationRemove, g, op, bodyConstraints)}
@@ -144,7 +151,7 @@ integer
   = digits:[0-9]+ { return parseInt(digits.join(""), 10)}
 
 input
-  = constraints:constraintList _ "." [\n\r]* {return constraints}
+  = constraints:constraintList _ "." [ \t\n\r]* {return constraints}
 
 _ "whitespace"
   = [ \t]*

@@ -7,6 +7,7 @@ angular.module 'chr'
         @appliedPropagations = {}
         @variables = []
         @hasFalse = false
+        @tracker = angular.noop
         
       detectVariables: ->
         @variables = []
@@ -32,10 +33,19 @@ angular.module 'chr'
           @GSB.length isnt 0
 
       solve: ->
-        @solveHelper @GSB.shift()
+        constraint = @GSB.shift()
+        action =
+          type: 'solve'
+          constraint: constraint
+        @tracker action
+        @solveHelper constraint
 
       introduce: ->
         constraint = @GSU.shift()
+        action =
+          type: 'introduce'
+          constraint: constraint
+        @tracker action
         @introductionHelper constraint
 
       introductionHelper: (constraint) ->
@@ -197,10 +207,16 @@ angular.module 'chr'
             continue if constraint.id in ids
             constraints.push constraint
             ids.push constraint.id
+            break
         # TODO check variable unification
         # TODO check guards
         @appliedPropagations[rule.name] = ids
         @applyBody rule, constraints
+        action =
+          type: 'propagate'
+          rule: rule
+          usedConstraints: constraints
+        @tracker action
       
       applyBody: (rule, userConstraints) ->
         # TODO handle variable re-assignment
@@ -224,6 +240,11 @@ angular.module 'chr'
         @handleSurvive rule, constraints
         # Add body constraints
         @applyBody rule, constraints
+        action =
+          type: 'simplify'
+          rule: rule
+          usedConstraints: constraints
+        @tracker action
 
       handleSurvive: (rule, constraints) ->
         removed = constraints.filter (e) ->
@@ -244,7 +265,7 @@ angular.module 'chr'
       ###
       Takes a step if one is applicable
       ###
-      takeStep: ->
+      takeStep: (@tracker=angular.noop) ->
         if @canSolve
           @takeAction @solve.bind @
         else if @applicableRules.length > 0
@@ -255,3 +276,32 @@ angular.module 'chr'
             @takeAction @simplify.bind @, rule
         else if @canIntroduce
           @takeAction @introduce.bind @
+
+      ###
+      Utility function for marking all applicable propagation rules as
+      applied, used with confluence check
+      ###
+      markApplicablePropagationsAsApplied: ->
+        helper = =>
+          applicablePropagationRules = _.filter @applicableRules, 'isPropagation'
+          applicablePropagationRules.forEach (rule) =>
+            ids = (@appliedPropagations[rule.name] or=[])
+            constraints = []
+            for hc in rule.head
+              ###
+              Make sure not to use a previously constraint
+              ###
+              for constraint in @CUHASH[hc.name]
+                continue if constraint.id in ids
+                constraints.push constraint
+                ids.push constraint.id
+            @appliedPropagations[rule.name] = ids
+            @normalize()
+
+        helper() while _.any @applicableRules, 'isPropagation'
+
+      resetTracker: ->
+        @tracker = angular.noop
+
+
+

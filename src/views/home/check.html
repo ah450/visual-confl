@@ -1,0 +1,39 @@
+<div data-ng-if="processing" id="confluenceProcessingSpinner"
+class="flex-perfect-center-container">
+  <div class="refresh-spinner">
+  <i class="material-icons">&#xE5D5;</i>
+  </div>
+</div>
+
+<div id="confluenceResultWrapper" data-ng-if="!processing">
+  
+  <section id="pairs">
+    <section
+    class="critical-pair"
+    data-ng-repeat="pair in pairs track by $index"
+    >
+      <div class="rule-wrapper flex-row-between">
+        <div class="pair">
+          <p class="representation">{{pair.first.representation}}</p>
+        </div>
+        <div class="pair">
+          <p class="representation">{{pair.second.representation}}</p>
+        </div>
+      </div>
+
+      <section class="overlaps flex-perfect-center-container flex-column">
+        <div class="overlap" data-ng-repeat="o in pair.overlap">
+          <p>{{o.first.name}} == {{o.second.name}}</p>
+        </div>
+      </section>
+
+      <section class="derivations flex-row-between">
+        <x-derivation data-derivations="pair.derivationsFirst"></x-derivation>
+        <x-derivation data-derivations="pair.derivationsSecond"></x-derivation>
+      </section>
+      
+    </section> <!-- Critical Pair -->
+
+  </section>
+
+</div>

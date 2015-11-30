@@ -4,8 +4,10 @@
     display: inline-block;
     width: 40%;
     line-height: 1.5;
-    height: 35vh;
+    height: 50vh;
+
     vertical-align: middle;
+    overflow: hidden;
     .CodeMirror {
       background: transparent;
       &::before {
@@ -37,7 +39,7 @@
     line-height: 1.5;
     overflow: auto;
     width: 40%;
-    height: 35vh;
+    height: 50vh;
     margin-left: 5vw;
   }
   .input {

@@ -1,0 +1,28 @@
+<div class="derivation">
+    <div class="step"
+    data-ng-repeat="derivation in derivations track by $index">
+      <!-- Switch on different derivation types -->
+      <div data-ng-switch on="derivation.action.type">
+        <div data-ng-switch-when="initial">
+          <p class="rule flow-text">Initial store</p>
+          <p class="store flow-text">{{representConstraintStore(derivation)}}</p>
+        </div>
+        <div data-ng-switch-when="propagate">
+          <p class="rule flow-text">{{derivation.action.rule.representation}}</p>
+          <p class="store flow-text">{{representConstraintStore(derivation)}}</p>
+        </div>
+        <div data-ng-switch-when="simplify">
+          <p class="rule flow-text">{{derivation.action.rule.representation}}</p>
+          <p class="store flow-text">{{representConstraintStore(derivation)}}</p>
+        </div>
+        <div data-ng-switch-when="solve">
+          <p class="rule flow-text">Solved {{representConstraint(derivation.action.constraint)}}</p>
+          <p class="store flow-text">{{representConstraintStore(derivation)}}</p>
+        </div>
+        <div data-ng-switch-when="introduce">
+          <p class="rule flow-text">Introduced {{representConstraint(derivation.action.constraint)}}</p>
+          <p class="store flow-text">{{representConstraintStore(derivation)}}</p>
+        </div>
+      </div>
+    </div>
+</div>
