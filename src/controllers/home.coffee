@@ -6,11 +6,14 @@ angular.module 'vconfl'
     propagation @ c => d.
     simpigation @ d \\ c <=> true.
     """
+    confluenceData.programSrc ||= initialProgram
+
     $scope.models =
-      programSrc: initialProgram
+      programSrc: confluenceData.programSrc
       history: []
       prompt: ''
       errorMessage: ''
+
 
     program = null
     $scope.isValidProgram = false
@@ -94,4 +97,5 @@ angular.module 'vconfl'
 
     $scope.checkConfluence = ->
       confluenceData.program = program
+      confluenceData.programSrc = $scope.models.programSrc
       $state.go 'main.check'

@@ -18,9 +18,13 @@ angular.module 'chr'
       for constraint in finalStateA.store
         product = Combinatorics.cartesianProduct [constraint], finalStateB.store
           .toArray()
-        criticalPair.joinable &= _.any product, (combination) ->
-          program.unify combination[0], combination[1]
-        break if not criticalPair.joinable
+        criticalPair.joinable = criticalPair.joinable && _.any product, (combination) ->
+          combination[0].name is combination[1].name
+      for constraint in finalStateB.store
+        product = Combinatorics.cartesianProduct [constraint], finalStateA.store
+          .toArray()
+        criticalPair.joinable = criticalPair.joinable && _.any product, (combination) ->
+          combination[0].name is combination[1].name
       # Test if the two final states are joinable
       return criticalPair
 
