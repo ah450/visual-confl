@@ -53,7 +53,7 @@ describe 'No variables no guards bugs', ->
         it 'should still be able to introduce', ->
           expect(@state.canIntroduce).to.be.true
 
-        it 'should have a b in its constraint store', ->
+        it 'should have b in its constraint store', ->
           expect(@state.CU.length).to.eql 1
           expect(@state.CU[0]).to.have.property('name', 'b')
 

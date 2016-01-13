@@ -69,17 +69,17 @@ angular.module 'chr'
 
       computeRepresentation: ->
         operator = if @isPropagation then '=>' else "<=>"
-        body = _.pluck @body, 'name'
+        body = _.map @body, 'name'
           .join ', '
 
         if @isSimpigation
-          removeNames = _.pluck @remove, 'name'
-          keep = _.pluck @head, 'name'
+          removeNames = _.map @remove, 'name'
+          keep = _.map @head, 'name'
             .filter (c) ->
               c not in removeNames
           head = "#{keep.join(', ')} \\ #{removeNames.join(', ')}"
         else
-          head = _.pluck @head, 'name'
+          head = _.map @head, 'name'
             .join ', '
         name = if not @parsed_generated_name then "#{@name} @" else ''
         @representation = "#{name} #{head} #{operator} #{body}."

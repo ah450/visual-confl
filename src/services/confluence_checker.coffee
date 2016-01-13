@@ -1,5 +1,5 @@
 angular.module 'chr'
-  .factory 'confluenceChecker', (findCriticalPairs, findDerivations, Combinatorics) ->
+  .factory 'confluenceChecker', (findCriticalPairs, findDerivations, Combinatorics, storeUnion) ->
 
     # Checks if a single critical pair is joinable
     checkPair = (program, pair) ->
@@ -18,14 +18,15 @@ angular.module 'chr'
       for constraint in finalStateA.store
         product = Combinatorics.cartesianProduct [constraint], finalStateB.store
           .toArray()
-        criticalPair.joinable = criticalPair.joinable && _.any product, (combination) ->
+        criticalPair.joinable = criticalPair.joinable && _.some product, (combination) ->
           combination[0].name is combination[1].name
       for constraint in finalStateB.store
         product = Combinatorics.cartesianProduct [constraint], finalStateA.store
           .toArray()
-        criticalPair.joinable = criticalPair.joinable && _.any product, (combination) ->
+        criticalPair.joinable = criticalPair.joinable && _.some product, (combination) ->
           combination[0].name is combination[1].name
       # Test if the two final states are joinable
+      ciriticalPair.commonStore = storeUnion criticalPair.derivationsFirst[0].store, criticalPair.derivationsSecond[0].store
       return criticalPair
 
 
@@ -34,7 +35,7 @@ angular.module 'chr'
       pairs = findCriticalPairs program
       checkFunc = _.partial checkPair, program
       pairs = _.map pairs, checkFunc
-      isConfluent = _.all pairs, 'joinable'
+      isConfluent = _.every pairs, 'joinable'
       return {
         pairs: pairs,
         isConfluent: isConfluent

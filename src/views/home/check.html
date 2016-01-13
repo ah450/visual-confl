@@ -7,35 +7,11 @@ class="flex-perfect-center-container">
 
 <div id="confluenceResultWrapper" data-ng-if="!processing">
   
-  <section id="pairs">
-    <section
-    class="critical-pair"
-    data-ng-repeat="pair in pairs track by $index"
+  <div id="pairs">
+    <canvas class="critical-pair"
+    data-pair-graph data-pair="pair" data-ng-repeat="pair in pairs track by $index"
     >
-      <div class="rule-wrapper flex-row-between">
-        <div class="pair">
-          <p class="representation">{{pair.first.representation}}</p>
-        </div>
-        <div class="pair">
-          <p class="representation">{{pair.second.representation}}</p>
-        </div>
-      </div>
-
-      <section class="overlaps flex-perfect-center-container flex-column">
-        <div class="overlap" data-ng-repeat="o in pair.overlap">
-          <p>{{o.first.name}} == {{o.second.name}}</p>
-        </div>
-      </section>
-
-      <section class="derivations flex-row-between">
-        <x-derivation data-derivations="pair.derivationsFirst"></x-derivation>
-        <x-derivation data-derivations="pair.derivationsSecond"></x-derivation>
-      </section>
-
-      <p class="joinable" data-ng-if="pair.joinable">Pair is joinable</p>
-      
-    </section> <!-- Critical Pair -->
-
-  </section>
+    </canvas>
+  </div>
 
 </div>
