@@ -16,7 +16,8 @@
     position: relative;
 
     .critical-pair {
-      width: 80%;
+      min-width: 80%;
+      display: block;
       margin: 0px auto 3em auto;
       position: relative;
       font-size: 2em;
@@ -30,58 +31,5 @@
         margin-bottom: 0px;
       }
     }
-
-    .representation, .overlap {
-      font-family: $mono;
-    }
-
-    .overlap {
-      margin-bottom: 1em;
-      &:last-child {
-        margin-bottom: none;
-      }
-      padding: 0.5em;
-      border: 1px solid $md-clr-blue-grey-200;
-      @media (min-resolution: 2dppx) {
-        border: 2px solid $md-clr-blue-grey-200;
-      }
-      background: $md-clr-grey-100;
-    }
-    .overlaps {
-      width: 50%;
-      margin: 2em auto 0px auto;
-    }
-
-    .joinable {
-      margin: auto;
-      width: 50%;
-    }
-
-    .derivations {
-      width: 100%;
-      .derivation {
-        display: inline-block;
-        .step {
-          font-family: $mono;
-          margin-bottom: 1em;
-          padding: 0.5em;
-          border: 1px solid $md-clr-blue-grey-200;
-          background: $md-clr-grey-100;
-          @media (min-resolution: 2dppx) {
-            border: 2px solid $md-clr-blue-grey-200;
-          }
-          &:last-child {
-            margin-bottom: 0px;
-          }
-
-          .rule {
-            margin-bottom: 0.5em;
-          }
-
-
-        }
-      }
-    }
-
   }
 }

@@ -20,8 +20,10 @@ angular.module 'chr'
       # First step in derivations
       derivation = {}
       derivation.store = initialState.constraintStore
+      derivation.goals = initialState.goalStore
       derivation.action =
         type: 'initial'
+        rule: rule
       derivations.push derivation
       # Generate derivations
       while initialState.hasComputation
@@ -30,6 +32,7 @@ angular.module 'chr'
           derivation.action = action
         initialState.takeStep tracker
         derivation.store = initialState.constraintStore
+        derivation.goals = initialState.goalStore
         derivations.push derivation
       return derivations
 

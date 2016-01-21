@@ -104,6 +104,14 @@ angular.module 'chr'
           else
             return @BI
 
+      @property 'goalStore',
+        get: ->
+          if @GSU.length > 0
+            return @GSU.concat @GSB.filter (c) ->
+              c.name isnt 'true'
+          else
+            return @GSB
+
 
       ###
       Normalization function

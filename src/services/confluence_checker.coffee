@@ -26,7 +26,8 @@ angular.module 'chr'
         criticalPair.joinable = criticalPair.joinable && _.some product, (combination) ->
           combination[0].name is combination[1].name
       # Test if the two final states are joinable
-      ciriticalPair.commonStore = storeUnion criticalPair.derivationsFirst[0].store, criticalPair.derivationsSecond[0].store
+      criticalPair.commonStore = storeUnion criticalPair.derivationsFirst[0].store, criticalPair.derivationsSecond[0].store
+      criticalPair.commonGoals = storeUnion criticalPair.derivationsFirst[0].goals, criticalPair.derivationsSecond[0].goals
       return criticalPair
 
 
